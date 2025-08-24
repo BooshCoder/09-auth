@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import CreateNote from "../../../../components/CreateNote/CreateNote";
+import CreateNote from "../../../../../components/CreateNote/CreateNote";
 
 export const metadata: Metadata = {
   title: "Створити нотатку | NoteHub",

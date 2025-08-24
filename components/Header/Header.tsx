@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link'
 import TagsMenu from '../TagsMenu/TagsMenu'
 import css from './Header.module.css'
+import AuthNavigation from '../AuthNavigation/AuthNavigation'
 
 export default function Header() {
     return (
@@ -16,6 +19,7 @@ export default function Header() {
                     <li className={css.navigationItem}>
                         <TagsMenu />
                     </li>
+                    <AuthNavigation />
                 </ul>
             </nav>
         </header>

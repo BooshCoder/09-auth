@@ -21,7 +21,7 @@ interface NoteStore {
 
 export const useNoteStore = create<NoteStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       draft: initialDraft,
       setDraft: (partial) =>
         set((state) => ({ draft: { ...state.draft, ...partial } })),

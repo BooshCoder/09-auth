@@ -1,66 +1,64 @@
+import { deleteNote } from "../../lib/api/clientApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteNote } from "../../lib/api";
-import type { Note } from "../../types/note";
+import { Note } from "../../types/note";
+import styles from "./NoteList.module.css";
 import Link from "next/link";
-import css from "./NoteList.module.css";
-import LoadingIndicator from "../LoadingIndicator/LoadingIndicator";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import EmptyState from "../EmptyState/EmptyState";
 
 interface NoteListProps {
   notes: Note[];
-  isLoading?: boolean;
-  isError?: boolean;
-  onViewNote?: (noteId: string) => void;
 }
 
-const NoteList: React.FC<NoteListProps> = ({ notes, isLoading, isError, onViewNote }) => {
+export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
-  const deleteMutation = useMutation({
+
+  const deleteNoteMutation = useMutation({
     mutationFn: deleteNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     },
   });
 
-  if (isLoading) return <LoadingIndicator />;
-  if (isError) return <ErrorMessage />;
-  if (notes.length === 0) return <EmptyState message="Нотаток не знайдено" />;
+  const handleDelete = (id: string) => {
+    if (confirm("Ви впевнені, що хочете видалити цю нотатку?")) {
+      deleteNoteMutation.mutate(id);
+    }
+  };
+
+  if (notes.length === 0) {
+    return (
+      <div className={styles.emptyState}>
+        <p>Нотаток не знайдено</p>
+      </div>
+    );
+  }
 
   return (
-    <ul className={css.list}>
-      {notes.map(note => (
-        <li className={css.listItem} key={note.id}>
-          <Link href={`/notes/${note.id}`} className={css.noteLink}>
-            <h2 className={css.title}>{note.title}</h2>
-            <p className={css.content}>{note.content}</p>
-          </Link>
-          <div className={css.footer}>
-            <span className={css.tag}>{note.tag}</span>
-            {onViewNote ? (
-              <button 
-                className={css.viewButton}
-                onClick={() => onViewNote(note.id)}
-              >
-                View details
-              </button>
-            ) : (
-              <Link href={`/notes/${note.id}`} className={css.viewButton}>
-                View details
-              </Link>
-            )}
+    <div className={styles.noteList}>
+      {notes.map((note) => (
+        <div key={note.id} className={styles.noteCard}>
+          <div className={styles.noteHeader}>
+            <h3 className={styles.noteTitle}>{note.title}</h3>
+            <span className={styles.noteTag}>{note.tag}</span>
+          </div>
+          <p className={styles.noteContent}>
+            {note.content.length > 150
+              ? `${note.content.substring(0, 150)}...`
+              : note.content}
+          </p>
+          <div className={styles.noteActions}>
+            <Link href={`/notes/${note.id}`} className={styles.viewButton}>
+              Переглянути
+            </Link>
             <button
-              className={css.button}
-              onClick={() => deleteMutation.mutate(note.id)}
-              disabled={deleteMutation.status === 'pending'}
+              onClick={() => handleDelete(note.id)}
+              className={styles.deleteButton}
+              disabled={deleteNoteMutation.isPending}
             >
-              Delete
+              {deleteNoteMutation.isPending ? "Видалення..." : "Видалити"}
             </button>
           </div>
-        </li>
+        </div>
       ))}
-    </ul>
+    </div>
   );
-};
-
-export default NoteList;
+}
