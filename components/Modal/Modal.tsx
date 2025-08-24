@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [handleClose]);
 
   const handleClose = () => {
     setIsClosing(true);

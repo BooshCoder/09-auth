@@ -24,8 +24,9 @@ export default function LoginForm() {
     
     try {
       await login({ email, password });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Помилка входу');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Помилка входу');
     }
   };
 

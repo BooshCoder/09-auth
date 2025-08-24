@@ -5,8 +5,17 @@ export interface User {
 }
 
 export interface FetchNotesResponse {
-  notes: any[];
+  notes: Note[];
   totalPages: number;
+}
+
+export interface Note {
+  id: string;
+  title: string;
+  content: string;
+  tag: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LoginParams {
@@ -86,7 +95,7 @@ export const getCurrentUser = async (): Promise<User> => {
   return response.json();
 };
 
-export const deleteNote = async (id: string): Promise<any> => {
+export const deleteNote = async (id: string): Promise<Note> => {
   const response = await fetch(`/api/notes/${id}`, {
     method: 'DELETE',
   });
@@ -122,7 +131,7 @@ export const fetchNotes = async (
   return response.json();
 };
 
-export const fetchNoteById = async (id: string): Promise<any> => {
+export const fetchNoteById = async (id: string): Promise<Note> => {
   console.log('Fetching note by ID:', id);
   const response = await fetch(`/api/notes/${id}`);
 
@@ -138,4 +147,21 @@ export const fetchNoteById = async (id: string): Promise<any> => {
   const data = await response.json();
   console.log('Note data received:', data);
   return data;
+};
+
+export const createNote = async (note: { title: string; content: string; tag: string }): Promise<Note> => {
+  const response = await fetch('/api/notes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(note),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to create note');
+  }
+
+  return response.json();
 };

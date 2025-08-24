@@ -30,8 +30,9 @@ export default function RegisterForm() {
     
     try {
       await register({ email, password });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Помилка реєстрації');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Помилка реєстрації');
     }
   };
 

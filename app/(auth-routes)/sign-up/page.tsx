@@ -20,8 +20,9 @@ export default function SignUpPage() {
     try {
       await register({ email, password });
       router.push('/profile');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Помилка реєстрації');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Помилка реєстрації');
     } finally {
       setIsLoading(false);
     }
