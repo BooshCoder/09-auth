@@ -1,5 +1,5 @@
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import { fetchNoteById } from "../../../../lib/api/clientApi";
+import { fetchNoteByIdServer } from "../../../../lib/api/serverApi";
 import NotePreview from "./NotePreview.client";
 
 interface NotePreviewPageProps {
@@ -14,7 +14,7 @@ export default async function NotePreviewPage({ params }: NotePreviewPageProps) 
   
   await queryClient.prefetchQuery({
     queryKey: ["note", resolvedParams.id],
-    queryFn: () => fetchNoteById(resolvedParams.id),
+    queryFn: () => fetchNoteByIdServer(resolvedParams.id),
   });
 
   return (
