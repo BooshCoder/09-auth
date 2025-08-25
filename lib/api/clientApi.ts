@@ -1,21 +1,10 @@
-export interface User {
-  id: string;
-  email: string;
-  username?: string;
-}
+import { api } from './api';
+import type { User } from '../../types/user';
+import type { Note } from '../../types/note';
 
 export interface FetchNotesResponse {
   notes: Note[];
   totalPages: number;
-}
-
-export interface Note {
-  id: string;
-  title: string;
-  content: string;
-  tag: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface LoginParams {
@@ -29,83 +18,38 @@ export interface RegisterParams {
   username?: string;
 }
 
+export interface UpdateUserParams {
+  username?: string;
+  email?: string;
+}
+
 export const login = async (credentials: LoginParams): Promise<User> => {
-  const response = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(credentials),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Login failed');
-  }
-
-  return response.json();
+  const response = await api.post('/auth/login', credentials);
+  return response.data;
 };
 
 export const register = async (credentials: RegisterParams): Promise<User> => {
-  const response = await fetch('/api/auth/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(credentials),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Registration failed');
-  }
-
-  return response.json();
+  const response = await api.post('/auth/register', credentials);
+  return response.data;
 };
 
 export const logout = async (): Promise<void> => {
-  const response = await fetch('/api/auth/logout', {
-    method: 'POST',
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Logout failed');
-  }
+  await api.post('/auth/logout');
 };
 
 export const getSession = async (): Promise<{ success: boolean }> => {
-  const response = await fetch('/api/auth/session');
-
-  if (!response.ok) {
-    throw new Error('Session check failed');
-  }
-
-  return response.json();
+  const response = await api.get('/auth/session');
+  return response.data;
 };
 
 export const getCurrentUser = async (): Promise<User> => {
-  const response = await fetch('/api/users/me');
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to get user data');
-  }
-
-  return response.json();
+  const response = await api.get('/users/me');
+  return response.data;
 };
 
 export const deleteNote = async (id: string): Promise<Note> => {
-  const response = await fetch(`/api/notes/${id}`, {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to delete note');
-  }
-
-  return response.json();
+  const response = await api.delete(`/notes/${id}`);
+  return response.data;
 };
 
 export const fetchNotes = async (
@@ -121,69 +65,21 @@ export const fetchNotes = async (
   if (search) params.append("search", search);
   if (tag && tag !== 'All') params.append("tag", tag);
 
-  const response = await fetch(`/api/notes?${params.toString()}`);
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to fetch notes');
-  }
-
-  return response.json();
+  const response = await api.get(`/notes?${params.toString()}`);
+  return response.data;
 };
 
 export const fetchNoteById = async (id: string): Promise<Note> => {
-  console.log('Fetching note by ID:', id);
-  const response = await fetch(`/api/notes/${id}`);
-
-  console.log('Response status:', response.status);
-  console.log('Response ok:', response.ok);
-
-  if (!response.ok) {
-    const error = await response.json();
-    console.error('Error fetching note:', error);
-    throw new Error(error.error || 'Failed to fetch note');
-  }
-
-  const data = await response.json();
-  console.log('Note data received:', data);
-  return data;
+  const response = await api.get(`/notes/${id}`);
+  return response.data;
 };
 
 export const createNote = async (note: { title: string; content: string; tag: string }): Promise<Note> => {
-  const response = await fetch('/api/notes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(note),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to create note');
-  }
-
-  return response.json();
+  const response = await api.post('/notes', note);
+  return response.data;
 };
 
-export interface UpdateUserParams {
-  username?: string;
-  email?: string;
-}
-
 export const updateUserProfile = async (userData: UpdateUserParams): Promise<User> => {
-  const response = await fetch('/api/users/me', {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to update profile');
-  }
-
-  return response.json();
+  const response = await api.patch('/users/me', userData);
+  return response.data;
 };
