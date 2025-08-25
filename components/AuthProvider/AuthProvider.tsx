@@ -10,12 +10,17 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  console.log('AuthProvider render:', { isAuthenticated, pathname, isRedirecting });
+  console.log('AuthProvider render:', { 
+    isAuthenticated, 
+    user, 
+    pathname, 
+    isRedirecting 
+  });
 
   // Приватні маршрути
   const privateRoutes = [
@@ -42,11 +47,17 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   // Логіка перенаправлення
   useEffect(() => {
-    console.log('AuthProvider useEffect:', { isAuthenticated, isPrivateRoute, isPublicRoute, pathname });
+    console.log('AuthProvider useEffect:', { 
+      isAuthenticated, 
+      user,
+      isPrivateRoute, 
+      isPublicRoute, 
+      pathname 
+    });
     
     // Якщо користувач неавторизований і намагається зайти на приватну сторінку
     if (!isAuthenticated && isPrivateRoute) {
-      console.log('Redirecting to sign-in');
+      console.log('Redirecting to sign-in - user not authenticated on private route');
       setIsRedirecting(true);
       router.push('/sign-in');
       
@@ -59,7 +70,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     // Якщо користувач авторизований і намагається зайти на публічну сторінку
     if (isAuthenticated && isPublicRoute) {
-      console.log('Redirecting to profile');
+      console.log('Redirecting to profile - user authenticated on public route');
       setIsRedirecting(true);
       router.push('/profile');
       
@@ -72,7 +83,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     console.log('No redirect needed');
     setIsRedirecting(false);
-  }, [isAuthenticated, isPrivateRoute, isPublicRoute, router, pathname]);
+  }, [isAuthenticated, user, isPrivateRoute, isPublicRoute, router, pathname]);
 
   // Показуємо лоадер під час перенаправлення
   if (isRedirecting) {
