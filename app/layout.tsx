@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "../components/Providers/QueryProvider";
+import AuthProvider from "../components/AuthProvider/AuthProvider";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
@@ -60,10 +61,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
         <QueryProvider>
-          <Header />
-          {children}
-          {modal}
-          <Footer />
+          <AuthProvider>
+            <Header />
+            {children}
+            {modal}
+            <Footer />
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
