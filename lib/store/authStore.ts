@@ -8,8 +8,8 @@ import {
   getCurrentUser,
   updateUserProfile
 } from "../api/clientApi";
+import type { User } from "../../types/user";
 import type { 
-  User, 
   LoginParams, 
   RegisterParams 
 } from "../api/clientApi";
