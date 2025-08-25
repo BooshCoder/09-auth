@@ -4,7 +4,7 @@ import type { LoginParams, RegisterParams } from './clientApi';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL + '/api';
 
-// Серверна версія API з підтримкою cookies
+// Серверна версія API з підтримкою cookies для серверних компонентів
 export const serverApi = axios.create({
   baseURL,
   headers: {
