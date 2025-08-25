@@ -1,109 +1,68 @@
 .mainContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 2rem;
-  background-color: #f8f9fa;
-}
-
-.formTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #212529;
-  margin-bottom: 2rem;
-  text-align: center;
+  flex: 1;
 }
 
 .form {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   max-width: 400px;
-  border: 1px solid #e9ecef;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.formTitle {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 8px;
+  color: #212529;
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
-}
-
-.formGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
   font-weight: 500;
-  color: #495057;
-  font-size: 0.875rem;
+  color: #212529;
 }
 
 .input {
-  width: 100%;
-  padding: 0.75rem;
+  margin-top: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
   border: 1px solid #ced4da;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-  box-sizing: border-box;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-radius: 4px;
 }
 
 .actions {
-  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .submitButton {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
-  color: white;
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #0d6efd;
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
-.submitButton:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.submitButton:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
+.submitButton:hover {
+  background-color: #0b5ed7;
 }
 
 .error {
   color: #dc3545;
-  font-size: 0.875rem;
-  margin-top: 1rem;
+  font-size: 12px;
+  margin-top: 4px;
   text-align: center;
-  padding: 0.5rem;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-}
-
-/* Адаптивність для мобільних пристроїв */
-@media (max-width: 480px) {
-  .mainContent {
-    padding: 1rem;
-  }
-
-  .form {
-    padding: 1.5rem;
-  }
-
-  .formTitle {
-    font-size: 1.75rem;
-  }
 }

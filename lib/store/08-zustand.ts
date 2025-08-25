@@ -5,7 +5,8 @@ import {
   register, 
   logout, 
   getSession, 
-  getCurrentUser
+  getCurrentUser,
+  updateUserProfile
 } from "../api/clientApi";
 import type { 
   User, 
@@ -22,6 +23,7 @@ interface AuthStore {
   register: (credentials: RegisterParams) => Promise<void>;
   logout: () => Promise<void>;
   checkSession: () => Promise<void>;
+  updateProfile: (userData: { username?: string; email?: string }) => Promise<void>;
   setUser: (user: User | null) => void;
   clearIsAuthenticated: () => void;
   resetSessionCheck: () => void;
@@ -149,6 +151,17 @@ export const useAuthStore = create<AuthStore>()(
       
       clearIsAuthenticated: () => {
         set({ user: null, isAuthenticated: false });
+      },
+      
+      updateProfile: async (userData) => {
+        set({ isLoading: true });
+        try {
+          const updatedUser = await updateUserProfile(userData);
+          set({ user: updatedUser, isLoading: false });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
       },
       
       resetSessionCheck: () => {

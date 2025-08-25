@@ -17,7 +17,7 @@ export default function AuthNavigation() {
   const handleLogout = async () => {
     try {
       await logout();
-      router.push('/sign-in');
+      router.push('/sign-in'); // Редірект на сторінку Login після виходу
     } catch (error) {
       console.error('Помилка виходу:', error);
     }
@@ -41,6 +41,7 @@ export default function AuthNavigation() {
     );
   }
 
+  // Якщо користувач авторизований - показуємо Profile та Logout
   if (isAuthenticated) {
     return (
       <>
@@ -49,9 +50,8 @@ export default function AuthNavigation() {
             Profile
           </a>
         </li>
-
         <li className={css.navigationItem}>
-          <p className={css.userEmail}>{user?.email}</p>
+          {user?.username && <span className={css.userName}>{user.username}</span>}
           <button 
             onClick={handleLogout}
             disabled={isLoading}
@@ -64,17 +64,17 @@ export default function AuthNavigation() {
     );
   }
 
+  // Якщо користувач не авторизований - показуємо Register та Login
   return (
     <>
       <li className={css.navigationItem}>
-        <a href="/sign-in" className={css.navigationLink}>
-          Login
-        </a>
-      </li>
-
-      <li className={css.navigationItem}>
         <a href="/sign-up" className={css.navigationLink}>
           Register
+        </a>
+      </li>
+      <li className={css.navigationItem}>
+        <a href="/sign-in" className={css.navigationLink}>
+          Login
         </a>
       </li>
     </>

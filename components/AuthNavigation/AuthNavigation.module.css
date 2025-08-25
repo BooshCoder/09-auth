@@ -1,7 +1,8 @@
-.userEmail {
+.userName {
   color: white;
   margin-right: 0.5rem;
   font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .logoutButton {

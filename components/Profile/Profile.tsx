@@ -42,7 +42,7 @@ export default function Profile() {
       <div className={css.profileCard}>
         <div className={css.header}>
           <h1 className={css.formTitle}>Profile Page</h1>
-          <a href="" className={css.editProfileButton}>
+         <a href="/profile/edit" className={css.editProfileButton}>
             Edit Profile
           </a>
         </div>
@@ -53,7 +53,7 @@ export default function Profile() {
         </div>
         <div className={css.profileInfo}>
           <p>
-            Username: {user?.name || 'Not specified'}
+            Username: {user?.username || 'Not specified'}
           </p>
           <p>
             Email: {user?.email || 'Not available'}

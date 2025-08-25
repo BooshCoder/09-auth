@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   email: string;
-  name?: string;
+  username?: string;
 }
 
 export interface FetchNotesResponse {
@@ -26,7 +26,7 @@ export interface LoginParams {
 export interface RegisterParams {
   email: string;
   password: string;
-  name?: string;
+  username?: string;
 }
 
 export const login = async (credentials: LoginParams): Promise<User> => {
@@ -161,6 +161,28 @@ export const createNote = async (note: { title: string; content: string; tag: st
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error || 'Failed to create note');
+  }
+
+  return response.json();
+};
+
+export interface UpdateUserParams {
+  username?: string;
+  email?: string;
+}
+
+export const updateUserProfile = async (userData: UpdateUserParams): Promise<User> => {
+  const response = await fetch('/api/users/me', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to update profile');
   }
 
   return response.json();
