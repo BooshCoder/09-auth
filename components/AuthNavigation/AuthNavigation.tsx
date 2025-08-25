@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuthStore } from '../../lib/store/08-zustand';
 import css from './AuthNavigation.module.css';
 
@@ -28,14 +29,14 @@ export default function AuthNavigation() {
     return (
       <>
         <li className={css.navigationItem}>
-          <a href="/sign-in" className={css.navigationLink}>
+          <Link href="/sign-in" className={css.navigationLink}>
             Login
-          </a>
+          </Link>
         </li>
         <li className={css.navigationItem}>
-          <a href="/sign-up" className={css.navigationLink}>
+          <Link href="/sign-up" className={css.navigationLink}>
             Register
-          </a>
+          </Link>
         </li>
       </>
     );
@@ -46,9 +47,9 @@ export default function AuthNavigation() {
     return (
       <>
         <li className={css.navigationItem}>
-          <a href="/profile" className={css.navigationLink}>
+          <Link href="/profile" className={css.navigationLink}>
             Profile
-          </a>
+          </Link>
         </li>
         <li className={css.navigationItem}>
           {user?.username && <span className={css.userName}>{user.username}</span>}
@@ -68,14 +69,14 @@ export default function AuthNavigation() {
   return (
     <>
       <li className={css.navigationItem}>
-        <a href="/sign-up" className={css.navigationLink}>
+        <Link href="/sign-up" className={css.navigationLink}>
           Register
-        </a>
+        </Link>
       </li>
       <li className={css.navigationItem}>
-        <a href="/sign-in" className={css.navigationLink}>
+        <Link href="/sign-in" className={css.navigationLink}>
           Login
-        </a>
+        </Link>
       </li>
     </>
   );
