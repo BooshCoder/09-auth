@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '../../../lib/api/clientApi';
+import { useAuthStore } from '../../../lib/store/authStore';
 import css from './SignInPage.module.css';
 
 export default function SignInPage() {
@@ -11,6 +12,7 @@ export default function SignInPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +20,8 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      await login({ email, password });
+      const user = await login({ email, password });
+      setUser(user); // Зберігаємо користувача в глобальному store
       router.push('/profile');
      } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Помилка входу');
