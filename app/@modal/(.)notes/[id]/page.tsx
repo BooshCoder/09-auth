@@ -12,10 +12,16 @@ export default async function NotePreviewPage({ params }: NotePreviewPageProps) 
   const queryClient = new QueryClient();
   const resolvedParams = await params;
   
-  await queryClient.prefetchQuery({
-    queryKey: ["note", resolvedParams.id],
-    queryFn: () => fetchNoteByIdServer(resolvedParams.id),
-  });
+  try {
+    await queryClient.prefetchQuery({
+      queryKey: ["note", resolvedParams.id],
+      queryFn: () => fetchNoteByIdServer(resolvedParams.id),
+    });
+  } catch (error) {
+    // Якщо помилка 401 (Unauthorized), не prefetch'имо дані
+    // Клієнтський компонент сам обробить цю ситуацію
+    console.log('Server prefetch failed, client will handle:', error);
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
