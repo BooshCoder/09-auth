@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '../../lib/store/authStore';
 import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
@@ -13,6 +13,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const { isAuthenticated } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Приватні маршрути
   const privateRoutes = [
@@ -39,19 +40,23 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Якщо користувач неавторизований і намагається зайти на приватну сторінку
     if (!isAuthenticated && isPrivateRoute) {
+      setIsRedirecting(true);
       router.push('/sign-in');
       return;
     }
 
     // Якщо користувач авторизований і намагається зайти на публічну сторінку
     if (isAuthenticated && isPublicRoute) {
+      setIsRedirecting(true);
       router.push('/profile');
       return;
     }
+
+    setIsRedirecting(false);
   }, [isAuthenticated, isPrivateRoute, isPublicRoute, router, pathname]);
 
-  // Не показуємо контент якщо користувач неавторизований на приватній сторінці
-  if (!isAuthenticated && isPrivateRoute) {
+  // Показуємо лоадер під час перенаправлення
+  if (isRedirecting) {
     return <LoadingIndicator />;
   }
 
