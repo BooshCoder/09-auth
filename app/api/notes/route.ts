@@ -21,7 +21,6 @@ export async function GET(request: NextRequest) {
       },
       headers: {
         Cookie: cookieStore.toString(),
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
       },
     });
 
@@ -49,7 +48,6 @@ export async function POST(request: NextRequest) {
       headers: {
         Cookie: cookieStore.toString(),
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`,
       },
     });
 
