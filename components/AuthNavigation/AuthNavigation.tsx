@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthStore } from '../../lib/store/08-zustand';
+import { useAuthStore } from '../../lib/store/authStore';
 import css from './AuthNavigation.module.css';
 
 export default function AuthNavigation() {
-  const { user, isAuthenticated, logout, isLoading } = useAuthStore();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -55,10 +55,9 @@ export default function AuthNavigation() {
           {user?.username && <span className={css.userName}>{user.username}</span>}
           <button 
             onClick={handleLogout}
-            disabled={isLoading}
             className={css.logoutButton}
           >
-            {isLoading ? 'Logout...' : 'Logout'}
+            Logout
           </button>
         </li>
       </>

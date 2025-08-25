@@ -6,6 +6,7 @@ interface AuthStore {
   isAuthenticated: boolean;
   setUser: (user: User | null) => void;
   clearIsAuthenticated: () => void;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -18,5 +19,20 @@ export const useAuthStore = create<AuthStore>((set) => ({
   
   clearIsAuthenticated: () => {
     set({ user: null, isAuthenticated: false });
+  },
+
+  logout: async () => {
+    try {
+      // Викликаємо API для logout
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Очищаємо локальний стан
+      set({ user: null, isAuthenticated: false });
+    }
   },
 }));
