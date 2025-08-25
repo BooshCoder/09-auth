@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuthStore } from '../../lib/store/authStore';
 import css from './TagsMenu.module.css';
 
 const tags = [
@@ -17,19 +17,40 @@ const tags = [
 export default function TagsMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   
   // Використовуємо useEffect для уникнення проблем з гідратацією
   const [currentTagName, setCurrentTagName] = useState('All notes');
   
   React.useEffect(() => {
-    const tag = pathname.includes('/notes/filter/') 
-      ? pathname.split('/notes/filter/')[1] 
-      : 'All';
-    
-    const tagName = tags.find(t => t.slug === tag)?.name || 'All notes';
-    
-    setCurrentTagName(tagName);
+    // Перевіряємо чи ми на сторінці фільтра
+    if (pathname.includes('/notes/filter/')) {
+      const pathParts = pathname.split('/notes/filter/');
+      if (pathParts.length > 1) {
+        const tagSlug = pathParts[1];
+        const tag = tags.find(t => t.slug === tagSlug);
+        setCurrentTagName(tag ? tag.name : 'All notes');
+      } else {
+        setCurrentTagName('All notes');
+      }
+    } else {
+      setCurrentTagName('All notes');
+    }
   }, [pathname]);
+
+  const handleTagClick = (tagSlug: string) => {
+    setIsOpen(false);
+    
+    // Якщо користувач неавторизований, перенаправляємо на sign-in
+    if (!isAuthenticated) {
+      router.push('/sign-in');
+      return;
+    }
+    
+    // Якщо авторизований, переходимо на сторінку нотаток
+    router.push(`/notes/filter/${tagSlug}`);
+  };
 
   return (
     <div className={css.menuContainer} suppressHydrationWarning>
@@ -44,13 +65,12 @@ export default function TagsMenu() {
         <ul className={css.menuList}>
           {tags.map((tag) => (
             <li key={tag.slug} className={css.menuItem}>
-              <Link 
-                href={`/notes/filter/${tag.slug}`} 
+              <button 
+                onClick={() => handleTagClick(tag.slug)}
                 className={css.menuLink}
-                onClick={() => setIsOpen(false)}
               >
                 {tag.name}
-              </Link>
+              </button>
             </li>
           ))}
         </ul>

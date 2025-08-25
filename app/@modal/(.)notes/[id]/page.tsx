@@ -1,5 +1,5 @@
 import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import { fetchNoteByIdServer } from "../../../../lib/api/serverApi";
+import { fetchNoteById } from "../../../../lib/api/clientApi";
 import NotePreview from "./NotePreview.client";
 
 interface NotePreviewPageProps {
@@ -12,16 +12,10 @@ export default async function NotePreviewPage({ params }: NotePreviewPageProps) 
   const queryClient = new QueryClient();
   const resolvedParams = await params;
   
-  try {
-    await queryClient.prefetchQuery({
-      queryKey: ["note", resolvedParams.id],
-      queryFn: () => fetchNoteByIdServer(resolvedParams.id),
-    });
-  } catch (error) {
-    // Якщо помилка 401 (Unauthorized), не prefetch'имо дані
-    // Клієнтський компонент сам обробить цю ситуацію
-    console.log('Server prefetch failed, client will handle:', error);
-  }
+  await queryClient.prefetchQuery({
+    queryKey: ["note", resolvedParams.id],
+    queryFn: () => fetchNoteById(resolvedParams.id),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

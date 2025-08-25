@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '../../lib/api/clientApi';
-import { useNoteStore } from '../../lib/store/noteStore';
 import styles from './NoteForm.module.css';
 
 interface NoteFormProps {
@@ -12,27 +11,28 @@ interface NoteFormProps {
 }
 
 export default function NoteForm({ onCancel }: NoteFormProps) {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [tag, setTag] = useState('All');
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { draft, setDraft, clearDraft } = useNoteStore();
 
   const createNoteMutation = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-      clearDraft(); // Скидаємо чернетковий стан після успішного створення
       router.push('/notes/filter/All');
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!draft.title.trim() || !draft.content.trim()) return;
+    if (!title.trim() || !content.trim()) return;
 
     createNoteMutation.mutate({
-      title: draft.title.trim(),
-      content: draft.content.trim(),
-      tag: draft.tag,
+      title: title.trim(),
+      content: content.trim(),
+      tag,
     });
   };
 
@@ -45,8 +45,8 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
         <input
           type="text"
           id="title"
-          value={draft.title}
-          onChange={(e) => setDraft({ title: e.target.value })}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           className={styles.input}
           placeholder="Введіть заголовок нотатки"
           required
@@ -59,8 +59,8 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
         </label>
         <textarea
           id="content"
-          value={draft.content}
-          onChange={(e) => setDraft({ content: e.target.value })}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           className={styles.textarea}
           placeholder="Введіть зміст нотатки"
           rows={6}
@@ -74,15 +74,15 @@ export default function NoteForm({ onCancel }: NoteFormProps) {
         </label>
         <select
           id="tag"
-          value={draft.tag}
-          onChange={(e) => setDraft({ tag: e.target.value })}
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
           className={styles.select}
         >
-          <option value="Todo">Todo</option>
-          <option value="Work">Work</option>
-          <option value="Personal">Personal</option>
-          <option value="Meeting">Meeting</option>
-          <option value="Shopping">Shopping</option>
+          <option value="All">Всі</option>
+          <option value="Work">Робота</option>
+          <option value="Personal">Особисте</option>
+          <option value="Ideas">Ідеї</option>
+          <option value="Important">Важливо</option>
         </select>
       </div>
 

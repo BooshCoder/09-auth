@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { register } from '../../../lib/api/clientApi';
+import { useAuthStore } from '../../../lib/store/authStore';
 import css from './sign-up.module.css';
 
 export default function SignUpPage() {
@@ -11,6 +12,7 @@ export default function SignUpPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +20,8 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      await register({ email, password });
+      const user = await register({ email, password });
+      setUser(user); // Зберігаємо користувача в глобальному store
       router.push('/profile');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };

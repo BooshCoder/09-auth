@@ -10,7 +10,7 @@ interface AuthProviderProps {
 }
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, isLoadingSession, checkSession } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -19,14 +19,16 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     isAuthenticated, 
     user, 
     pathname, 
-    isRedirecting 
+    isRedirecting,
+    isLoadingSession
   });
 
   // Приватні маршрути
   const privateRoutes = [
     '/notes',
     '/profile',
-    '/notes/action/create'
+    '/notes/action/create',
+    '/notes/filter'
   ];
 
   // Публічні маршрути
@@ -51,8 +53,20 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     publicRoutes
   });
 
+  // Перевіряємо сесію при завантаженні
+  useEffect(() => {
+    console.log('AuthProvider: checking session on mount');
+    checkSession();
+  }, [checkSession]);
+
   // Логіка перенаправлення
   useEffect(() => {
+    // Чекаємо завершення перевірки сесії
+    if (isLoadingSession) {
+      console.log('AuthProvider: waiting for session check to complete');
+      return;
+    }
+
     console.log('AuthProvider useEffect START:', { 
       isAuthenticated, 
       user,
@@ -93,11 +107,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     console.log('No redirect needed - all conditions passed');
     setIsRedirecting(false);
-  }, [isAuthenticated, user, isPrivateRoute, isPublicRoute, router, pathname]);
+  }, [isAuthenticated, user, isPrivateRoute, isPublicRoute, router, pathname, isLoadingSession]);
 
-  // Показуємо лоадер під час перенаправлення
-  if (isRedirecting) {
-    console.log('Showing LoadingIndicator - redirecting');
+  // Показуємо лоадер під час перевірки сесії або перенаправлення
+  if (isLoadingSession || isRedirecting) {
+    console.log('Showing LoadingIndicator - loading session or redirecting');
     return <LoadingIndicator />;
   }
 

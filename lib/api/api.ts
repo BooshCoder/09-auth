@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL + '/api';
+// Використовуємо поточний домен якщо змінна не встановлена
+const baseURL = process.env.NEXT_PUBLIC_API_URL 
+  ? process.env.NEXT_PUBLIC_API_URL + '/api'
+  : '/api';
 
 // Створюємо один спільний екземпляр axios з налаштуванням
 export const api = axios.create({
