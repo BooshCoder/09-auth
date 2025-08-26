@@ -12,7 +12,7 @@ interface AuthStore {
   checkSession: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthStore>((set, get) => {
+export const useAuthStore = create<AuthStore>()((set, get) => {
   // Очищаємо старі дані при ініціалізації
   if (typeof window !== 'undefined') {
     console.log('Clearing old auth data from localStorage');
