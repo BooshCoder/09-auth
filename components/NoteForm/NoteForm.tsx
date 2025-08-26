@@ -6,11 +6,7 @@ import { createNote } from '../../lib/api/clientApi';
 import { useNoteStore } from '../../lib/store/noteStore';
 import styles from './NoteForm.module.css';
 
-interface NoteFormProps {
-  onCancel?: () => void;
-}
-
-export default function NoteForm({ onCancel }: NoteFormProps) {
+export default function NoteForm() {
 const { draft, setDraft, clearDraft } = useNoteStore();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -88,7 +84,7 @@ const { draft, setDraft, clearDraft } = useNoteStore();
       <div className={styles.buttonGroup}>
         <button
           type="button"
-          onClick={onCancel}
+          onClick={() => router.back()}
           className={styles.cancelButton}
         >
           Скасувати
